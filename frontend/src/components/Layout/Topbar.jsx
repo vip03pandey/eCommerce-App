@@ -20,7 +20,7 @@ function Topbar() {
             <div className='text-sm text-center flex-grow'>
                 <span>We ship world wide-Fast and Reliable Shipping</span>
             </div>
-            <div className='tetx-sm hidden md:block'>
+            <div className='text-sm hidden md:block'>
                 <a href="tel:+123456789" className='hover:text-gray-300'>+11 (234) 567-89</a>
             </div>
         </div>
