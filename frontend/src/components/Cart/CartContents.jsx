@@ -33,16 +33,16 @@ const CartContents = () => {
                             <h3>{product.name}</h3>
                             <p className='text-sm text-gray-500'>size: {product.size} | color: {product.color}</p>
                             <div className='flex items-center mt-2'>
-                                <button className='border rounded px-2 py-1 text-xl font-medium'>-</button>
-                                <span className='mx-4'>{product.quantity}</span>
-                                <button className='border rounded px-2 py-1 text-xl font-medium'>+</button>
+                                <button className='border rounded px-2 py-1 text-xl font-medium cursor-pointer'>-</button>
+                                <span className='mx-4 '>{product.quantity}</span>
+                                <button className='border rounded px-2 py-1 text-xl font-medium cursor-pointer'>+</button>
                             </div>
                         </div>
                     </div>
                     {/* Move price and delete button to a separate div aligned to the right */}
                     <div className='flex items-center'>
                         <p className='font-medium mr-4'>${product.price.toLocaleString()}</p>
-                        <button>
+                        <button className='cursor-pointer'>
                             <MdDeleteOutline className='h-6 w-6 text-red-600' />
                         </button>
                     </div>

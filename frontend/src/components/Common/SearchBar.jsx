@@ -28,13 +28,13 @@ const SearchBar = () => {
             className='bg-gray-100 px-4 py-2 rounded-lg focus:outline-none w-full placeholder:text-gray-700 '
             onChange={(e) => setSearchTerm(e.target.value)}
             />
-            <button type='submit' className='absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-600 hover:text-gray-800'>
+            <button type='submit' className='absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-600 hover:text-gray-800 cursor-pointer'>
                 <CiSearch className='h-6 w-6'/>
             </button>
             <button type='button' onClick={handleSearchToggle} className='absolute top-1/2 transform -translate-y-1/2 text-gray-600 hover:text-gray-800'><IoCloseCircle className='h-6 w-6'/></button>
             </div>
       </form>):
-        (<button onClick={handleSearchToggle}><CiSearch className='h-6 w-6'/></button>)
+        (<button onClick={handleSearchToggle} className='cursor-pointer'><CiSearch className='h-6 w-6'/></button>)
       }
     </div>
   )
