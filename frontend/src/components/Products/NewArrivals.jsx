@@ -113,7 +113,8 @@ const NewArrivals = () => {
         if(container){
             container.addEventListener("scroll",updateScrollButton);
         }
-    })
+        return ()=>container.removeEventListener("scroll",updateScrollButton);
+    },[])
     const scroll=(direction)=>{
         const scrollAmount=direction==='left'?-300:300
         scrollRef.current.scrollBy({top:0,left:scrollAmount,behavior:'smooth'});
