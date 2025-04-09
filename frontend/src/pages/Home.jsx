@@ -4,6 +4,8 @@ import GenderCollection from '../components/Products/GenderCollection'
 import NewArrivals from '../components/Products/NewArrivals'
 import ProductDetails from '../components/Products/ProductDetails'
 import ProductGrid from '../components/Products/ProductGrid'
+import FeaturedCollection from '../components/Products/FeaturedCollection'
+import FeaturesSection from '../components/Products/FeaturesSection'
 const Home = () => {
   const placeHolderProducts = [
     {
@@ -90,6 +92,8 @@ const Home = () => {
       <div className='container mx-auto '>
         <h2 className='text-3xl text-center font-bold mb-4'>Top Wears for Women</h2>
         <ProductGrid products={placeHolderProducts}/>
+        <FeaturedCollection/>
+        <FeaturesSection/>
       </div>
     </div>
   )
