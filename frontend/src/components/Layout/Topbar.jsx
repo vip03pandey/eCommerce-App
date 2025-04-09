@@ -2,6 +2,7 @@ import React from 'react'
 import {TbBrandMeta} from 'react-icons/tb'
 import {IoLogoInstagram} from 'react-icons/io5'
 import {RiTwitterXLine} from 'react-icons/ri'
+import TypingEffect from '../Common/TypingEffect'
 function Topbar() {
   return (
     <div className='bg-[#ea2e0e] text-white'>
@@ -18,7 +19,7 @@ function Topbar() {
                 </a>
             </div>
             <div className='text-sm text-center flex-grow'>
-                <span>We ship world wide-Fast and Reliable Shipping</span>
+                <TypingEffect text='We ship world wide-Fast and Reliable Shipping' delay="150"/>
             </div>
             <div className='text-sm hidden md:block'>
                 <a href="tel:+123456789" className='hover:text-gray-300'>+11 (234) 567-89</a>
