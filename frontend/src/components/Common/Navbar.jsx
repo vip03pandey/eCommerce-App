@@ -22,7 +22,7 @@ const NavBar = () => {
         <Link to="/" className='text-2xl font-medium'>Rabbit</Link>
     </div>
     <div className='hidden md:flex space-x-6'>
-        <Link to="#" className='tetx-gray-700 hover:text-black text-sm font-medium uppercase'>Men</Link>
+        <Link to="/collections/all" className='tetx-gray-700 hover:text-black text-sm font-medium uppercase'>Men</Link>
         <Link to="#" className='tetx-gray-700 hover:text-black text-sm font-medium uppercase'>Women</Link>
         <Link to="#" className='tetx-gray-700 hover:text-black text-sm font-medium uppercase'>Top Wear</Link>
         <Link to="#" className='tetx-gray-700 hover:text-black text-sm font-medium uppercase'>Bottom Wear</Link>
