@@ -1,5 +1,8 @@
 import React,{useState,useEffect} from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
+import { debounce } from 'lodash';
+import { useCallback } from 'react';
+
 
 const FilterSidebar = () => {
     const [searchParams,setSearchParams]=useSearchParams()
@@ -94,15 +97,31 @@ const FilterSidebar = () => {
         setSearchParams(params);
         navigate(`?${params.toString()}`);
       }; 
-      const handlePriceChange=(e)=>{
-        const newPrice=e.target.value
-        setPriceRange([0,newPrice])
-        const newFilters={...filters}
-        newFilters.minPrice=0
-        newFilters.maxPrice=newPrice
-        setFilters(newFilters)
-        updateURLParams(newFilters)
-      }    
+    //    const handlePriceChange=(e)=>{
+    //     const newPrice=e.target.value
+    //     setPriceRange([0,newPrice])
+    //     const newFilters={...filters}
+    //     newFilters.minPrice=0
+    //     newFilters.maxPrice=newPrice
+    //     setFilters(newFilters)
+    //     updateURLParams(newFilters)
+    //     console.log("updatesd")
+    //   }    
+      const handlePriceChange = (e) => {
+        const newPrice = e.target.value;
+        setPriceRange([0, newPrice]);
+        debouncedPriceChange(newPrice);
+      };
+      const debouncedPriceChange = useCallback(
+        debounce((newPrice) => {
+          const newFilters = { ...filters, minPrice: 0, maxPrice: newPrice };
+          setFilters(newFilters);
+          updateURLParams(newFilters);
+        }, 300),
+        [filters]
+      );
+      
+      
   return (
     <div className='p-4'>
         <h3 className='text-xl font-medium text-gray-800 mb-4'>Filters</h3>
@@ -144,7 +163,9 @@ const FilterSidebar = () => {
             <label className='block text-gray-600 font-medium mb-2  '>Color</label>
             {colors.map((color)=>(
                 <button value={color}
-                onClick={handleFilterChange} key={color} name='color' className={`w-8 h-8 rounded-full border-1 border-black-500 cursor-pointer transition hover:sclae-105 m-0.5 ${filters.color===color?"ring-2 ring-blue-500":""}`} style={{backgroundColor:color.toLocaleLowerCase()}}></button>
+                onClick={handleFilterChange} key={color} name='color' 
+                className={`w-8 h-8 rounded-full border-1 border-black-500 cursor-pointer transition hover:sclae-105 m-0.5 ${filters.color===color?"ring-2 ring-blue-500":""}`} 
+                style={{backgroundColor:color.toLocaleLowerCase()}}></button>
             ))}
         </div>
 
@@ -201,7 +222,12 @@ const FilterSidebar = () => {
         {/* price range */}
         <div className='mb-8'>
             <label className='block text-gray-600 font-medium mb-2  '>Price Range</label>
-            <input type="range" name='priceRange' min={0} max={100} value={priceRange[1]} onChange={handlePriceChange} className='w-full h-2 bg-gray-300 rounded-lg appearance-none cursor-pointer'/>
+            <input type="range" 
+                name='priceRange' 
+                min={0} max={100} 
+                value={priceRange[1]} 
+                onChange={handlePriceChange} 
+                className='w-full h-2 bg-gray-300 rounded-lg appearance-none cursor-pointer'/>
             <div className='flex justify-between text-gray-600 mt-2'>
                 <span>$0</span>
                 <span>${priceRange[1]}</span>

@@ -11,8 +11,11 @@ const CollectionPage = () => {
         setIsSidebarOpen(!isSidebarOpen)
     }
     useEffect(()=>{
-        document.addEventListener("mousedown",handleClickOutside)
-        document.removeEventListener("mousedown",handleClickOutside)
+        document.addEventListener("mousedown", handleClickOutside);
+
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
         
     },[])
     const handleClickOutside=(e)=>{
@@ -98,7 +101,6 @@ const CollectionPage = () => {
               }
             ]
             setProducts(fetchedProducts)
-            console.log("rerendered")
         },1000)
     },[])
   return (
