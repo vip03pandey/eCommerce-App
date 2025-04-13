@@ -10,6 +10,8 @@ import CollectionPage from './pages/CollectionPage';
 import ProductDetails from './components/Products/ProductDetails';
 import Checkout from './components/Cart/Checkout';
 import OrderConfirmation from './pages/OrderConfirmation';
+import OrderDetailsPage from './pages/OrderDetailsPage';
+import MyOrdersPage from './pages/MyOrdersPage';
 const App = () => {
   return (
    <BrowserRouter >
@@ -24,6 +26,8 @@ const App = () => {
     <Route path="product/:id" element={<ProductDetails/>}></Route>
     <Route path="checkout" element={<Checkout/>}></Route>
     <Route path="order-confirmation" element={<OrderConfirmation/>}></Route>
+    <Route path="order/:id" element={<OrderDetailsPage/>}></Route>
+    <Route path="my-orders" element={<MyOrdersPage/>}></Route>
 
     </Route>
     <Route>{ /*admin layout*/ }</Route>
