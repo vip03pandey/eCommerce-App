@@ -71,6 +71,9 @@ const ProductDetails = () => {
           setmainImage(selectedProduct.images[0]?.url);
         }
       }, []);
+      useEffect(() => {
+        window.scrollTo(0, 0);
+      }, []);
     const changeImage = (image) => {
         setmainImage(image);
     }

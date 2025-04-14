@@ -1,8 +1,8 @@
-import React, { useState, useEffect,useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import heroImg1 from '../../assets/rabbit-hero.webp';
 import heroImg2 from '../../assets/heroImg.jpg';
-import heroImg3 from '../../assets/hero3.jpg'
+import heroImg3 from '../../assets/hero3.jpg';
 
 const slides = [
   {
@@ -19,19 +19,14 @@ const slides = [
     img: heroImg3,
     heading: 'Office Wear',
     text: 'Get geared up for your next journey',
-  }
+  },
 ];
 
 const Hero = () => {
   const [current, setCurrent] = useState(1);
   const [transition, setTransition] = useState(true);
   const slideRef = useRef(null);
-
-  const fullSlides = [
-    slides[slides.length - 1], 
-    ...slides,                
-    slides[0],             
-  ];
+  const fullSlides = [slides[slides.length - 1], ...slides, slides[0]];
 
   const nextSlide = () => {
     setCurrent((prev) => prev + 1);
@@ -44,12 +39,30 @@ const Hero = () => {
   };
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      nextSlide();
-    }, 5000);
-    return () => clearInterval(timer);
-  }, []);
+    let timer;
 
+    const startSlider = () => {
+      timer = setInterval(() => {
+        nextSlide();
+      }, 5000);
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        clearInterval(timer);
+      } else {
+        startSlider();
+      }
+    };
+
+    startSlider();
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      clearInterval(timer);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, []);
 
   useEffect(() => {
     if (!transition) return;
@@ -59,7 +72,6 @@ const Hero = () => {
         setTransition(false);
         setCurrent(1);
       } else if (current === 0) {
-
         setTransition(false);
         setCurrent(fullSlides.length - 2);
       }
@@ -77,18 +89,10 @@ const Hero = () => {
 
   return (
     <section className="relative overflow-hidden h-[400px] md:h-[600px] lg:h-[750px]">
-      <div
-        ref={slideRef}
-        className="flex h-full"
-        style={slideStyle}
-      >
+      <div ref={slideRef} className="flex h-full" style={slideStyle}>
         {fullSlides.map((slide, index) => (
           <div key={index} className="w-full flex-shrink-0 relative h-full">
-            <img
-              src={slide.img}
-              alt={`Slide ${index}`}
-              className="w-full h-full object-cover"
-            />
+            <img src={slide.img} alt={`Slide ${index}`} className="w-full h-full object-cover" />
             <div className="absolute inset-0 bg-black/30 flex items-center justify-center z-10">
               <div className="text-center text-white p-6">
                 <h1 className="text-4xl md:text-9xl font-bold tracking-tighter uppercase mb-4">
