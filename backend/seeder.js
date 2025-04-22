@@ -1,0 +1,38 @@
+const mongoose = require('mongoose')
+const dotenv=require('dotenv')
+const Product = require('./models/Products')
+const User = require('./models/user')
+const products = require('./data/productList')
+const user = require('./models/user')
+
+dotenv.config()
+
+mongoose.connect(process.env.MONGO_URI);
+
+const seedData=async()=>{
+    try{
+        await Product.deleteMany({})
+        await User.deleteMany()
+
+        // admin user
+        const createdUser=await User.create({
+            name:'AdminUser',
+            email:'admin@admin.com',
+            password:'admin123',
+            role:'admin'
+        })
+        // default userId for each product
+        const userId=createdUser._id
+        const sampleProducts=products.map((product)=>{
+            return {...product,user:userId}
+        })
+        // inserting products
+        await Product.insertMany(sampleProducts)
+        console.log('Products inserted successfully')
+        process.exit(0)
+    }
+    catch(err){
+        console.log(err.message)
+    }
+}
+seedData()
