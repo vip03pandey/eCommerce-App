@@ -5,6 +5,7 @@ const dotenv=require('dotenv')
 const connectDB=require('./config/db')
 const userRoutes=require('./routes/useRoutes')
 const productsRoutes=require('./routes/productssRoutes')
+const cartRoutes=require('./routes/CartRoutes')
 
 app.use(express.json())
 app.use(cors())
@@ -20,6 +21,7 @@ app.get('/',(req,res)=>{
 
 app.use('/api/users',userRoutes)
 app.use('/api/products',productsRoutes)
+app.use('/api/cart',cartRoutes)
 
 app.listen(PORT,()=>{
     console.log(`Server is running on port ${PORT}`)

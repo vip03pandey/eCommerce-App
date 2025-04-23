@@ -2,6 +2,7 @@ const express = require('express')
 const Product = require('../models/Products')
 const router = express.Router()
 const { protect, admin } = require('../middleware/authMiddleware') 
+const mongoose = require("mongoose"); 
 
 router.post('/', protect, admin, async (req, res) => {
     try {
@@ -169,6 +170,87 @@ router.get('/', async (req, res) => {
         res.status(500).json({ message: "Error getting products" });
     }
 });
+
+// Best sellers - specific route
+router.get("/best-seller", async (req, res) => {
+    try {
+        const bestSellers = await Product.find().sort({ rating: -1 });
+        if (bestSellers && bestSellers.length > 0) {
+            res.json(bestSellers);
+        } else {
+            res.status(404).json({ message: "No products found" });
+        }
+    } catch (err) {
+        console.log(err);
+        res.status(500).send(err);
+    }
+});
+
+// new arrival
+router.get("/new-arrivals", async (req, res) => {
+    try{
+        const newArrivals = await Product.find().sort({ createdAt: -1 }).limit(8);
+        res.json(newArrivals);
+    }
+    catch(err){
+        console.log(err)
+        res.status(500).send(err)
+    }
+})
+
+
+// Single product - dynamic route 
+router.get('/:id', async (req, res) => {
+    try {
+        const foundProduct = await Product.findById(req.params.id);
+        if (foundProduct) {
+            res.status(200).json(foundProduct);
+        } else {
+            res.status(404).json({ message: "Product not found" });
+        }
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).json({ message: "Error getting product" });
+    }
+});
+
+
+
+// getting all products by category
+
+
+router.get("/similar/:id", async (req, res) => {
+    const { id } = req.params;
+    try {
+        const foundProduct = await Product.findById(id);
+
+        if (!foundProduct) {
+            return res.status(404).json({ message: "Product not found" });
+        }
+        const similarProducts = await Product.find({
+            _id: { $ne: new mongoose.Types.ObjectId(id) }, 
+            gender: foundProduct.gender,
+            category: foundProduct.category,
+        }).limit(4);
+
+        res.json(similarProducts);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Error getting similar products" });
+    }
+});
+
+
+// best seller route
+router.get("/best-seller", async (req, res) => {
+    try{
+        res.send("best seller")
+    }
+    catch(err){
+        console.log(err)
+        res.status(500).send(err)
+    }
+})
 
 
 module.exports = router
