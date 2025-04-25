@@ -6,6 +6,8 @@ const connectDB=require('./config/db')
 const userRoutes=require('./routes/useRoutes')
 const productsRoutes=require('./routes/productssRoutes')
 const cartRoutes=require('./routes/CartRoutes')
+const checkoutRoutes=require('./routes/checkoutRoutes')
+const orderRoutes=require('./routes/orderRoutes')
 
 app.use(express.json())
 app.use(cors())
@@ -22,6 +24,8 @@ app.get('/',(req,res)=>{
 app.use('/api/users',userRoutes)
 app.use('/api/products',productsRoutes)
 app.use('/api/cart',cartRoutes)
+app.use('/api/checkout',checkoutRoutes)
+app.use('/api/orders',orderRoutes)
 
 app.listen(PORT,()=>{
     console.log(`Server is running on port ${PORT}`)
