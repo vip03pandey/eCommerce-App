@@ -1,14 +1,16 @@
 import React,{useState} from 'react'
 import { Link } from 'react-router-dom';
 import registerImage from '/Users/vipulpandey/Ecommerce/frontend/src/assets/register.webp'
-
+import { registerUser } from '../../redux/slices/authSlice';
+import { useDispatch } from 'react-redux'
 const Register = () => {
     const [email,setEmail]=useState("");
     const [password,setPassword]=useState("");
     const [name,setName]=useState("");
+    const dispatch=useDispatch()
     const handleSubmit=(e)=>{
         e.preventDefault()
-        console.log("User Registered",{name,email,password})
+        dispatch(registerUser({email,password,name}))
     }
   return (
     <div className='flex'>
