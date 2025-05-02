@@ -2,106 +2,27 @@ import React, { useRef, useState ,useEffect} from 'react'
 import { VscArrowCircleLeft } from "react-icons/vsc";
 import { VscArrowCircleRight } from "react-icons/vsc";
 import { Link } from 'react-router-dom';
-const newArrivals=[
-    
-    {
-        _id:"1",
-        name:"T-shirt",
-        price:120,
-        images:[
-            {
-                url:"https://picsum.photos/200?random=1",
-                altText:"T-shirt"
-            },
-            
-        ]
-    },
-    {
-        _id:"2",
-        name:"Shirt",
-        price:100,
-        images:[
-            {
-                url:"https://picsum.photos/200?random=2",
-                altText:"T-shirt"
-            },
-            
-        ]
-    },
-    {
-        _id:"3",
-        name:"T-shirt",
-        price:120,
-        images:[
-            {
-                url:"https://picsum.photos/200?random=3",
-                altText:"T-shirt"
-            },
-            
-        ]
-    },
-    {
-        _id:"4",
-        name:"T-shirt",
-        price:120,
-        images:[
-            {
-                url:"https://picsum.photos/200?random=4",
-                altText:"T-shirt"
-            },
-            
-        ]
-    },
-    {
-        _id:"5",
-        name:"T-shirt",
-        price:120,
-        images:[
-            {
-                url:"https://picsum.photos/200?random=5",
-                altText:"T-shirt"
-            },
-            
-        ]
-    },
-    {
-        _id:"6",
-        name:"T-shirt",
-        price:120,
-        images:[
-            {
-                url:"https://picsum.photos/200?random=6",
-                altText:"T-shirt"
-            },
-            
-        ]
-    },
-    {
-        _id:"7",
-        name:"T-shirt",
-        price:120,
-        images:[
-            {
-                url:"https://picsum.photos/200?random=7",
-                altText:"T-shirt"
-            },
-            
-        ]
-    },
-    {
-        _id:"8",
-        name:"T-shirt",
-        price:120,
-        images:[
-            {
-                url:"https://picsum.photos/200?random=8",
-                altText:"T-shirt"
-            },
-            
-        ]
-    },
-]
+import axios from 'axios';
+
 const NewArrivals = () => {
+    const [newArrivals,setNewArrivals]=useState([]);
+    useEffect(()=>{
+        const fetchNewArrivals=async()=>{
+            try{
+                const response=await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/products/new-arrivals`,{
+                    headers:{
+                        Authorization:`Bearer ${localStorage.getItem("userToken")}`
+                    }
+                })
+                
+                setNewArrivals(response.data)
+            }
+            catch(err){
+                console.log(err)
+            }
+        }
+        fetchNewArrivals()
+    },[])
     const scrollRef=useRef(null);
     const [isDragging,setIsDragging]=useState(false);
     const [startX,setStartX]=useState(0);
@@ -114,7 +35,7 @@ const NewArrivals = () => {
             container.addEventListener("scroll",updateScrollButton);
         }
         return ()=>container.removeEventListener("scroll",updateScrollButton);
-    },[])
+    },[newArrivals])
     const scroll=(direction)=>{
         const scrollAmount=direction==='left'?-300:300
         scrollRef.current.scrollBy({top:0,left:scrollAmount,behavior:'smooth'});
