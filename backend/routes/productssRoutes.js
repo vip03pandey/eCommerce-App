@@ -232,7 +232,6 @@ router.get("/similar/:id", async (req, res) => {
             gender: foundProduct.gender,
             category: foundProduct.category,
         }).limit(4);
-
         res.json(similarProducts);
     } catch (err) {
         console.error(err);
@@ -242,15 +241,15 @@ router.get("/similar/:id", async (req, res) => {
 
 
 // best seller route
-router.get("/best-seller", async (req, res) => {
-    try{
-        res.send("best seller")
-    }
-    catch(err){
-        console.log(err)
-        res.status(500).send(err)
-    }
-})
+// router.get("/best-seller", async (req, res) => {
+//     try{
+//         res.send("best seller")
+//     }
+//     catch(err){
+//         console.log(err)
+//         res.status(500).send(err)
+//     }
+// })
 
 
 module.exports = router
