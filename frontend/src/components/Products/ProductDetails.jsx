@@ -1,71 +1,28 @@
 import React, { useState,useEffect } from 'react'
 import { toast } from 'sonner';
 import ProductGrid from './ProductGrid';
+import { useParams } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchProductDetails, fetchSimilarProducts } from '../../../redux/slices/productsSlice';
+import {addToCart} from '../../../redux/slices/cartSlice';
 
-const selectedProduct={
-    name:"T-shirt",
-    price:120,
-    originalPrice:150,
-    description:"This is stylish T-shirt",
-    brand:"Nike",
-    material:"Cotton",
-    sizes:["S","M","L"],
-    colors:["Red","White"],
-    images: [
-        {
-          url: "https://picsum.photos/id/1011/200/200",
-          altText: "T-shirt 1",
-        },
-        {
-          url: "https://picsum.photos/id/1012/200/200",
-          altText: "T-shirt 2",
-        },
-      ]      
-}
-const similarProducts=[
-    {
-        _id:"1",
-        name:"T-shirt",
-        price:100,
-        images:[{
-             url: "https://picsum.photos/id/1012/200/200",
-             altText: "T-shirt 2",
-        }]
-    },
-    {
-        _id:"2",
-        name:"T-shirt",
-        price:100,
-        images:[{
-             url: "https://picsum.photos/id/1011/200/200",
-             altText: "T-shirt ",
-        }]
-    },
-    {
-        _id:"3",
-        name:"T-shirt",
-        price:100,
-        images:[{
-             url: "https://picsum.photos/id/1013/200/200",
-             altText: "T-shirt ",
-        }]
-    },
-    {
-        _id:"4",
-        name:"T-shirt",
-        price:100,
-        images:[{
-             url: "https://picsum.photos/id/1014/200/200",
-             altText: "T-shirt 2",
-        }]
-    }
-]
-const ProductDetails = () => {
+const ProductDetails = ({productId}) => {
+    const {id}=useParams()
+    const dispatch = useDispatch()
+    const { selectedProduct, similarProducts, loading, error } = useSelector((state) => state.products);
+    const {user,guestId}=useSelector((state)=>state.auth)
     const [mainImage,setmainImage]=useState("");
     const [selectedSize, setSelectedSize] = useState("");
     const [selectedColor, setSelectedColor] = useState("");
     const [quantity, setQuantity] = useState(1);
     const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+    const productFetchId=productId || id
+    useEffect(()=>{
+        if(productFetchId){
+            dispatch(fetchProductDetails(productFetchId))
+            dispatch(fetchSimilarProducts({id:productFetchId}))
+        }
+    },[dispatch,productFetchId])
     useEffect(() => {
         if (selectedProduct?.images?.length > 0) {
           setmainImage(selectedProduct.images[0]?.url);
@@ -83,14 +40,32 @@ const ProductDetails = () => {
             return;
         }
         setIsButtonDisabled(true);
-        setTimeout(()=>{
-            toast.success("Product added to cart",{duration:2000});
-            setIsButtonDisabled(false);
-        },500);
+        dispatch(addToCart({
+            productId:productFetchId,
+            size:selectedSize,
+            color:selectedColor,
+            quantity:quantity,
+            guestId,
+            userId:user?._id
+        })
+    ).then(()=>{
+        toast.success("Product added to cart",{duration:2000});
+        setIsButtonDisabled(false);
+    }).catch((err)=>{
+        toast.error("Failed to add to cart",{duration:2000});
+        setIsButtonDisabled(false);
+    })
+    }
+    if(loading){
+        return <p className='text-center'>Loading...</p>
+    }
+    if(error){
+        return <p className='text-center'>Error fetching product details</p>
     }
 
   return (
     <div className='p-6 '>
+        {selectedProduct && (
         <div className='max-w-6xl mx-auto bg-white p-8 rounded-lg'>
             <div className='flex flex-col md:flex-row'>
                 <div className='hidden md:flex flex-col space-y-4 mr-6'>
@@ -175,7 +150,7 @@ const ProductDetails = () => {
                 <ProductGrid products={similarProducts}/>
             </div>
         </div>
-      
+        )}
     </div>
   )
 }

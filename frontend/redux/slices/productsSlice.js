@@ -72,7 +72,11 @@ export const fetchSimilarProducts = createAsyncThunk(
   "products/fetchSimilarProducts",
   async ({ id }) => {
     const response = await axios.get(
-      `${import.meta.env.VITE_BACKEND_URL}/api/products/similar/${id}`
+      // ✅ Correct
+`${import.meta.env.VITE_BACKEND_URL}/api/products/similar/${id}`
+
+
+
     );
     return response.data;
   }
@@ -85,20 +89,24 @@ const productsSlice = createSlice({
     products: [],
     selectedProduct: null,
     similarProducts: [],
-    loading: false,
-    error: null,
+    loadingProducts: false,
+    loadingDetails: false,
+    loadingSimilar: false,
+    errorProducts: null,
+    errorDetails: null,
+    errorSimilar: null,
     filters: {
-      category: "",
-      size: "",
-      color: "",
-      gender: "",
-      minPrice: "",
-      maxPrice: "",
-      sortBy: "",
-      search: "",
-      material: "",
-      brand: "",
-      collection: "",
+      category: '',
+      size: '',
+      color: '',
+      gender: '',
+      minPrice: '',
+      maxPrice: '',
+      sortBy: '',
+      search: '',
+      material: '',
+      brand: '',
+      collection: '',
     },
   },
   reducers: {
