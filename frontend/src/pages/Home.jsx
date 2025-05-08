@@ -20,23 +20,22 @@ const Home = () => {
   useEffect(() => {
   dispatch(
     fetchProductsByFilters({
-      gender: 'women',
-      category: 'Bottom Wear',
+      gender: 'Women',
+      category: 'Top Wear',
       limit: 8,
     })
   );
+  console.log('Filtered Products:', products);
 
   const fetchBestSeller = async () => {
     try {
       setBestSellerLoading(true);
       const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/products/best-seller`);
-      console.log('Best Seller Response:', response.data);
-      // Filter for Women's Top Wear and select the first product
+      // console.log('Best Seller Response:', response.data);
       const womenTopWear = response.data.filter(
         (product) => product.gender === 'Women' && product.category === 'Top Wear'
       );
       const product = womenTopWear.length > 0 ? womenTopWear[0] : null;
-      console.log('Selected Best Seller Product:', product);
       setBestSellerProduct(product);
       setBestSellerLoading(false);
     } catch (err) {
@@ -50,7 +49,6 @@ const Home = () => {
 }, [dispatch]);
 
 console.log('Rendering Best Seller Section:', { bestSellerProduct, bestSellerLoading, bestSellerError });
-// console.log("in home",bestSellerProduct._id)
   return (
     <div>
       <Hero />
@@ -62,7 +60,7 @@ console.log('Rendering Best Seller Section:', { bestSellerProduct, bestSellerLoa
       ) : bestSellerError ? (
         <p className='text-center text-red-500'>{bestSellerError}</p>
       ) : bestSellerProduct && bestSellerProduct._id ? (
-        <ProductDetails productID={bestSellerProduct._id} />
+        <ProductDetails productId={bestSellerProduct._id} />
       ) : (
         <p className='text-center'>No best seller product found.</p>
       )}

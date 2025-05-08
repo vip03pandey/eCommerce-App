@@ -23,17 +23,24 @@ const ProductDetails = ({productId}) => {
             dispatch(fetchSimilarProducts({id:productFetchId}))
         }
     },[dispatch,productFetchId])
+
     useEffect(() => {
         if (selectedProduct?.images?.length > 0) {
           setmainImage(selectedProduct.images[0]?.url);
+          setSelectedColor("");
+          setSelectedSize("");
+          setQuantity(1);
         }
-      }, []);
-      useEffect(() => {
+      }, [selectedProduct]);
+      
+    useEffect(() => {
         window.scrollTo(0, 0);
       }, []);
+
     const changeImage = (image) => {
         setmainImage(image);
     }
+
     const handleAddToCart = () => {
         if(!selectedSize || !selectedColor){
             toast.error("Please select size and color",{duration:1000});
@@ -56,6 +63,7 @@ const ProductDetails = ({productId}) => {
         setIsButtonDisabled(false);
     })
     }
+    
     if(loading){
         return <p className='text-center'>Loading...</p>
     }
@@ -147,7 +155,7 @@ const ProductDetails = ({productId}) => {
             </div>
             <div className='mt-20 '>
                 <h2 className='text-2xl text-center font-medium mb-4'>You May Also Like</h2>
-                <ProductGrid products={similarProducts}/>
+                <ProductGrid products={similarProducts} loading={loading} error={error} />
             </div>
         </div>
         )}

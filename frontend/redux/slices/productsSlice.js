@@ -19,9 +19,9 @@ export const fetchProductsByFilters = createAsyncThunk(
     limit,
   }) => {
     const query = new URLSearchParams();
-    if (collection) query.append("collection", collection);
-    if (size) query.append("size", size);
-    if (color) query.append("color", color);
+    if (collection) query.append("collections", collection);
+    if (size) query.append("sizes", size);
+    if (color) query.append("colors", color);
     if (gender) query.append("gender", gender);
     if (minPrice) query.append("minPrice", minPrice);
     if (maxPrice) query.append("maxPrice", maxPrice);
@@ -31,6 +31,8 @@ export const fetchProductsByFilters = createAsyncThunk(
     if (material) query.append("material", material);
     if (brand) query.append("brand", brand);
     if (limit) query.append("limit", limit);
+
+    console.log('Sorting with:', sortBy);
 
     const response = await axios.get(
       `${import.meta.env.VITE_BACKEND_URL}/api/products?${query.toString()}`
