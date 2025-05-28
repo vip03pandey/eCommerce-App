@@ -1,12 +1,32 @@
-import React,{useState} from 'react'
-import { Link } from 'react-router-dom';
+import React,{useEffect, useState} from 'react'
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import loginImage from '/Users/vipulpandey/Ecommerce/frontend/src/assets/login.webp'
 import { loginUser } from '../../redux/slices/authSlice'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import {mergeCart} from '../../redux/slices/cartSlice'
 const Login = () => {
     const [email,setEmail]=useState("");
     const [password,setPassword]=useState("");
     const dispatch=useDispatch()
+    const navigate=useNavigate()
+    const location=useLocation()
+    const {user,guestId}=useSelector(state=>state.auth)
+    const {cart}=useSelector(state=>state.cart)
+
+    const redirect=new URLSearchParams(location.search).get("redirect") || '/';
+    const isCheckout = redirect.includes("checkout");
+    useEffect(() => {
+        if (user) {
+            if (cart?.products.length > 0) {
+                dispatch(mergeCart({ guestId, user })).then(() => {
+                    navigate(isCheckout ? "/checkout" : "/");
+                });
+            } else {
+                navigate(isCheckout ? "/checkout" : "/");
+            }
+        }
+    }, [user, guestId, cart, navigate, isCheckout, dispatch]);
+    
     const handleSubmit=(e)=>{
         e.preventDefault()
         dispatch(loginUser({email,password}))
@@ -14,7 +34,7 @@ const Login = () => {
   return (
     <div className='flex'>
         <div className='w-full md:w-1/2 flex flex-col justify-center items-center p-8 md:p-12'>
-        <form onClick={handleSubmit} action="" className='w-full max-w-md bg-white p-8 rounded-lg border shadow-sm'>
+        <form onSubmit={handleSubmit} action="" className='w-full max-w-md bg-white p-8 rounded-lg border shadow-sm'>
             <div className='flex justify-center mb-6'>
                 <h2 className='text-xl font-medium '>Rabbit</h2>
 
@@ -30,7 +50,7 @@ const Login = () => {
                 <input type="password" value={password} onChange={(e)=>setPassword(e.target.value)} className='w-full p-2 border rounded' placeholder="Enter your password"/>
             </div>
             <button type='submit' className='w-full bg-black text-white p-2 rounded-lg font-semibold hover:bg-gray-800 transition'>Sign in</button>
-            <p className='mt-6 text-center text-sm'>Dont' have an account {" "} <Link to="/register" className='text-blue-500'>Register</Link></p>
+            <p className='mt-6 text-center text-sm'>Dont' have an account {" "} <Link to={`/register?redirect=${encodeURIComponent(redirect)}`} className='text-blue-500'>Register</Link></p>
         </form>
         </div>
         <div className='hidden md:block w-1/2 bg-gray-800'>

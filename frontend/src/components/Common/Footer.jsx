@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, Navigate } from 'react-router-dom'
 import {TbBrandMeta} from 'react-icons/tb'
 import {IoLogoInstagram} from 'react-icons/io5'
 import {RiTwitterXLine} from 'react-icons/ri'
@@ -22,16 +22,16 @@ function Footer() {
             <h3 className='text-lg text-gray-800 mb-4 '>Shop</h3>
             <ul className='space-y-2 text-gray-600'>
                 <li>
-                    <Link to="#" className='hover:text-gray-500 transition-colors'>Men's Top Wear</Link>
+                    <Link to="/collections/all?gender=Men&category=Top Wear" className='hover:text-gray-500 transition-colors'>Men's Top Wear</Link>
                 </li>
                 <li>
-                    <Link to="#" className='hover:text-gray-500 transition-colors'>Women's Top Wear</Link>
+                    <Link to="/collections/all?gender=Women&category=Top Wear" className='hover:text-gray-500 transition-colors'>Women's Top Wear</Link>
                 </li>
                 <li>
-                    <Link to="#" className='hover:text-gray-500 transition-colors'>Men's Botton Wear</Link>
+                    <Link to="/collections/all?gender=Women&category=Bottom Wear" className='hover:text-gray-500 transition-colors'>Men's Botton Wear</Link>
                 </li>
                 <li>
-                    <Link to="#" className='hover:text-gray-500 transition-colors'>Women's Botton Wear</Link>
+                    <Link to="/collections/all?gender=Women&category=Bottom Wear" className='hover:text-gray-500 transition-colors'>Women's Botton Wear</Link>
                 </li>
             </ul>
         </div>

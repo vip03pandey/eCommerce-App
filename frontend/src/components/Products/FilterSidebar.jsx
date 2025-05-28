@@ -7,7 +7,6 @@ import { fetchProductsByFilters } from '../../../redux/slices/productsSlice';
 const FilterSidebar = ({collection}) => {
     const dispatch=useDispatch()
     const [searchParams,setSearchParams]=useSearchParams()
-    const navigate=useNavigate()
     const [filters,setFilters]=useState({
         category:"",
         gender:"",
@@ -98,7 +97,6 @@ const FilterSidebar = ({collection}) => {
       
         Object.keys(newFilters).forEach((key) => {
           if (Array.isArray(newFilters[key]) && newFilters[key].length > 0) {
-            // Convert array values to comma-separated strings
             params.set(key, newFilters[key].join(","));
           } else if (newFilters[key] !== "" && newFilters[key] !== 0) {
             params.set(key, newFilters[key]);
