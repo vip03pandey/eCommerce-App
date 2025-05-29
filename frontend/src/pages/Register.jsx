@@ -1,8 +1,12 @@
-import React,{useState} from 'react'
+import React,{useState,useEffect} from 'react'
 import { Link } from 'react-router-dom';
 import registerImage from '/Users/vipulpandey/Ecommerce/frontend/src/assets/register.webp'
 import { registerUser } from '../../redux/slices/authSlice';
 import { useDispatch } from 'react-redux'
+import { useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import {mergeCart} from '../../redux/slices/cartSlice'
 const Register = () => {
     const [email,setEmail]=useState("");
     const [password,setPassword]=useState("");
@@ -12,6 +16,24 @@ const Register = () => {
         e.preventDefault()
         dispatch(registerUser({email,password,name}))
     }
+    const navigate=useNavigate()
+    const location=useLocation()
+    const {user,guestId}=useSelector(state=>state.auth)
+    const {cart}=useSelector(state=>state.cart)
+
+    const redirect=new URLSearchParams(location.search).get("redirect") || '/';
+    const isCheckout = redirect.includes("checkout");
+    useEffect(() => {
+        if (user) {
+            if (cart?.products.length > 0) {
+                dispatch(mergeCart({ guestId, user })).then(() => {
+                    navigate(isCheckout ? "/checkout" : "/");
+                });
+            } else {
+                navigate(isCheckout ? "/checkout" : "/");
+            }
+        }
+    }, [user, guestId, cart, navigate, isCheckout, dispatch]);
   return (
     <div className='flex'>
         <div className='w-full md:w-1/2 flex flex-col justify-center items-center p-8 md:p-12'>
@@ -35,7 +57,7 @@ const Register = () => {
                 <input type="password" value={password} onChange={(e)=>setPassword(e.target.value)} className='w-full p-2 border rounded' placeholder="Enter your password"/>
             </div>
             <button type='submit' className='w-full bg-black text-white p-2 rounded-lg font-semibold hover:bg-gray-800 transition cursor-pointer'>Sign Up</button>
-            <p className='mt-6 text-center text-sm'>Already have an account {" "} <Link to="/login" className='text-blue-500'>Login</Link></p>
+            <p className='mt-6 text-center text-sm'>Already have an account {" "} <Link to={`/login?redirect=${encodeURIComponent(redirect)}`} className='text-blue-500'>Login</Link></p>
         </form>
         </div>
         <div className='hidden md:block w-1/2 bg-gray-800'>

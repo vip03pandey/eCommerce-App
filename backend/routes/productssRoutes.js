@@ -100,15 +100,15 @@ router.get('/', async (req, res) => {
 
         // Filters
         if (collection && collection.toLowerCase() !== 'all') {
-            query.collections = collection;
+            query.collection = collection;
         }
 
         if (size) {
-            query.sizes = { $in: size.split(',') };
+            query.size = { $in: size.split(',') };
         }
 
         if (color) {
-            query.colors = { $in: [color] };
+            query.color = { $in: [color] };
         }
 
         if (gender) {

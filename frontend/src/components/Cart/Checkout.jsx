@@ -1,28 +1,16 @@
-import { first, set } from 'lodash';
-import React, { useState } from 'react'
+import { create, first, set } from 'lodash';
+import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import PaypalButton from './PaypalButton';
-const cart={
-    products:[
-        {
-            name:"T-shirt",
-            size:"M",
-            color:'Black',
-            price:120,
-            image:"https://picsum.photos/200?random=1"
-        },
-        {
-            name:"T-shirt",
-            size:"M",
-            color:'Black',
-            price:120,
-            image:"https://picsum.photos/200?random=2"
-        },
-    ],
-    totalPrice:240,
-}
+import { useDispatch, useSelector } from 'react-redux';
+import axios from 'axios';
+import { createCheckout } from '../../../redux/slices/checkoutSlice';
 const Checkout = () => {
     const navigate=useNavigate();
+    const dispatch=useDispatch()
+    const {cart,loading,error}=useSelector(state=>state.cart)
+    const {user}=useSelector(state=>state.auth)
+
     const [shippingAddress,setShippingAddress]=useState({
         firstName:'',
         lastName:'',
@@ -33,15 +21,79 @@ const Checkout = () => {
         phone:''
     })
     const [checkoutId,setCheckoutId]=useState(null)
-
-    const handleCreateCheckout=(e)=>{
+    useEffect(()=>{
+        if (!cart || cart.products.length === 0)            {
+            navigate('/')
+        }
+    },[cart,navigate])
+      
+    const handleCreateCheckout=async(e)=>{
         e.preventDefault()
-        setCheckoutId(123)
+        if(cart && cart.products.length>0){
+            const response=await dispatch(createCheckout({checkoutItems:cart.products,shippingAddress,paymentMethod:"Paypal",totalPrice:cart.totalPrice}))
+            if (response.payload && response.payload._id) {
+                setCheckoutId(response.payload._id);
+              }
+        }
     }
-    const handlePaymentSuccess=(details)=>{
-        console.log("Payment Success",details)
+    const handlePaymentSuccess=async(details)=>{
+        try {
+            const res=await axios.put(`${import.meta.env.VITE_BACKEND_URL}/api/checkout/pay`,{paymentStatus:"paid",paymentDetails:details},{
+                headers:{
+                    'Authorization':`Bearer ${localStorage.getItem("userToken")}`
+                }
+            })
+            if(res.status===200){
+                await handleFinalizeCheckout(checkoutId)
+            }
+            else{
+                console.error("Payment",res)
+            }
+        }
+        catch(err){
+            console.error("Payment Success",err)
+        }
         navigate('/order-confirmation')
     }
+    const handleFinalizeCheckout=async(checkoutId)=>{
+        try {
+            const res=await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/checkout/${checkoutId}/finalize`,{
+            },{
+                headers:{
+                    'Authorization':`Bearer ${localStorage.getItem("userToken")}`
+                }
+            })
+            if(res.status===200){
+                navigate('/order-confirmation')
+            }
+            else{
+                console.error("Finalize Checkout",res)
+            }
+        }
+        catch(err){
+            console.error("Finalize Checkout",err)
+        }
+    }
+    if(loading){
+        return <div className='flex justify-center items-center'>
+            <div className='animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-700'></div>
+        </div>
+    }
+    if(error){
+        return <div className='flex justify-center items-center'>
+            <div className='text-red-500'>{error}</div>
+        </div>
+    }
+    if(!cart || !cart.products.length===0){
+        return <div className='flex justify-center items-center'>
+            <div className='text-red-500'>Cart is empty</div>
+        </div>
+    }
+    console.log("Checkout Payload", {
+        checkoutItems: cart.products,
+        shippingAddress:cart.shippingAddress,
+        totalPrice:cart.totalPrice
+      });
   return (
     <div className='grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-7xl mx-auto py-10 px-6 tracking tighter'>
         <div className='bg-white rounded-lg p-6 '>
@@ -52,7 +104,7 @@ const Checkout = () => {
                     <label className='block gray-700 '>Email</label>
                     <input 
                     type="email" 
-                    value="user@gmail.com" 
+                    value={user?.email}
                     className='w-full p-2 border rounded' 
                     disabled/>
                 </div>
@@ -96,7 +148,7 @@ const Checkout = () => {
                 <div className='mt-6'>{!checkoutId ? (<button type='submit' className='w-full bg-black text-white py-3 rounded'> Continue To Payment</button>) : (
                     <div>
                         <h3 className='text-lg mb-4 '>Pay With Paypal</h3>
-                        <PaypalButton amount={100} 
+                        <PaypalButton amount={cart.totalPrice} 
                         onSuccess={handlePaymentSuccess} 
                         onError={(err)=>{
                             console.error("PayPal Checkout onError", err);

@@ -8,29 +8,32 @@ const {protect}=require("../middleware/authMiddleware");
 const router=express.Router();
 
 // checkout route
-router.post('/',protect,async(req,res)=>{
-    const {checkoutItems,shippingAddress,paymentMethod,totalPrice}=req.body;
-    if(!checkoutItems || !shippingAddress || !paymentMethod || !totalPrice){
-        return res.status(400).json({message:"no items in checkout"})
+router.post('/', protect, async (req, res) => {
+    const { checkoutItems, shippingAddress, paymentMethod, totalPrice } = req.body;
+
+    console.log('Received:', { checkoutItems, shippingAddress, paymentMethod, totalPrice });
+
+    if (!checkoutItems || !shippingAddress || !paymentMethod || !totalPrice) {
+        return res.status(400).json({ message: "Missing required fields in checkout" });
     }
-    try{
-        const newCheckout=await Checkout.create({
-            user:req.user._id,
+
+    try {
+        const newCheckout = await Checkout.create({
+            user: req.user._id,
             checkoutItems,
             shippingAddress,
             paymentMethod,
             totalPrice,
-            paymentStatus:"pending",
-            isPaid:false
-        })
-        console.log(newCheckout)
-        res.status(201).json(newCheckout)
+            paymentStatus: "pending",
+            isPaid: false
+        });
+        res.status(201).json(newCheckout);
+    } catch (err) {
+        console.error("Checkout creation failed:", err);
+        return res.status(500).json({ message: "Server error during checkout" });
     }
-    catch(err){
-        console.log(err)
-        return res.status(500).json({message:"server error"})
-    }
-})
+});
+
 
 
 // updating checout to mark as paid after payment

@@ -15,6 +15,7 @@ const adminProductRoutes=require('./routes/ProductAdminRoutes')
 const adminOrderRoutes=require('./routes/adminOrderRoutes')
 
 app.use(express.json())
+app.use(express.urlencoded({ extended: true }));
 app.use(cors())
 dotenv.config()
 connectDB ()
