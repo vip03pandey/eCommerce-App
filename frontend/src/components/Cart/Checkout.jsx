@@ -20,6 +20,13 @@ const Checkout = () => {
         country:'',
         phone:''
     })
+    useEffect(() => {
+        const token = localStorage.getItem("userToken");
+        if (!token || !user) {
+            console.log("No valid authentication found");
+            navigate('/login');
+        }
+    }, [user, navigate]);
     const [checkoutId,setCheckoutId]=useState(null)
     useEffect(()=>{
         if (!cart || cart.products.length === 0)            {
@@ -27,53 +34,87 @@ const Checkout = () => {
         }
     },[cart,navigate])
       
-    const handleCreateCheckout=async(e)=>{
+    const handleCreateCheckout = async(e) => {
         e.preventDefault()
-        if(cart && cart.products.length>0){
-            const response=await dispatch(createCheckout({checkoutItems:cart.products,shippingAddress,paymentMethod:"Paypal",totalPrice:cart.totalPrice}))
+        
+        const token = localStorage.getItem("userToken");
+        if (!token) {
+            alert("Please log in again");
+            navigate('/login');
+            return;
+        }
+        
+        if(cart && cart.products.length > 0) {
+            // Remove the checkoutdata wrapper
+            const response = await dispatch(createCheckout({
+                checkoutItems: cart.products,
+                shippingAddress,
+                paymentMethod: "Paypal",
+                totalPrice: cart.totalPrice
+            }))
+            
             if (response.payload && response.payload._id) {
                 setCheckoutId(response.payload._id);
-              }
+            }
         }
     }
-    const handlePaymentSuccess=async(details)=>{
-        try {
-            const res=await axios.put(`${import.meta.env.VITE_BACKEND_URL}/api/checkout/pay`,{paymentStatus:"paid",paymentDetails:details},{
-                headers:{
-                    'Authorization':`Bearer ${localStorage.getItem("userToken")}`
+    // const decodeToken = () => {
+    //     const token = localStorage.getItem("userToken");
+    //     if (token) {
+    //         try {
+    //             // This will show you the token structure (don't do this in production)
+    //             const payload = JSON.parse(atob(token.split('.')[1]));
+    //             console.log('Token payload:', payload);
+    //         } catch (e) {
+    //             console.log('Could not decode token:', e);
+    //         }
+    //     }
+    // };
+    
+    // // Call this function to see your token structure
+    // decodeToken();
+const handlePaymentSuccess = async(details) => {
+    try {
+        const res = await axios.put(
+            `${import.meta.env.VITE_BACKEND_URL}/api/checkout/${checkoutId}/pay`, // Use checkoutId here
+            {
+                paymentStatus: "paid",
+                paymentDetails: details
+            },
+            {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem("userToken")}`
                 }
-            })
-            if(res.status===200){
-                await handleFinalizeCheckout(checkoutId)
             }
-            else{
-                console.error("Payment",res)
-            }
-        }
-        catch(err){
-            console.error("Payment Success",err)
-        }
-        navigate('/order-confirmation')
+        )
+            await handleFinalizeCheckout(checkoutId)
+    } catch(err) {
+        console.error("Payment Success", err)
     }
-    const handleFinalizeCheckout=async(checkoutId)=>{
-        try {
-            const res=await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/checkout/${checkoutId}/finalize`,{
-            },{
-                headers:{
-                    'Authorization':`Bearer ${localStorage.getItem("userToken")}`
-                }
-            })
-            if(res.status===200){
-                navigate('/order-confirmation')
-            }
-            else{
-                console.error("Finalize Checkout",res)
-            }
+}
+const handleFinalizeCheckout = async (checkoutId) => {
+    const token = localStorage.getItem("userToken"); // ✅ Fix: Use correct token key
+  
+    try {
+      const res = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/api/checkout/${checkoutId}/finalize`,
+        {}, 
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
-        catch(err){
-            console.error("Finalize Checkout",err)
-        }
+
+      );
+      navigate("/order-confirmation"); 
+      console.log("Checkout Success", res.data);
+      return res.data; 
+    } catch (err) {
+      console.error("Finalize Checkout", err);
+      throw err; 
     }
+};
+  
     if(loading){
         return <div className='flex justify-center items-center'>
             <div className='animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-700'></div>
@@ -89,11 +130,6 @@ const Checkout = () => {
             <div className='text-red-500'>Cart is empty</div>
         </div>
     }
-    console.log("Checkout Payload", {
-        checkoutItems: cart.products,
-        shippingAddress:cart.shippingAddress,
-        totalPrice:cart.totalPrice
-      });
   return (
     <div className='grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-7xl mx-auto py-10 px-6 tracking tighter'>
         <div className='bg-white rounded-lg p-6 '>
