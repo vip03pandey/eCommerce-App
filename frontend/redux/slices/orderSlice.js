@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
 
-export const fetchUserOrders=createAsyncThunk("order/fetchUserOrders",async({rejectWithValue})=>{
+export const fetchUserOrders = createAsyncThunk("order/fetchUserOrders", async (_, { rejectWithValue }) => {
     try{
         const response=await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/orders/my-orders`,{
             headers:{

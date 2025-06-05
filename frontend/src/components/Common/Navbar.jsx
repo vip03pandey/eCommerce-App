@@ -8,6 +8,7 @@ import { IoCloseCircle } from "react-icons/io5";
 import { useSelector } from 'react-redux';
 
 const NavBar = () => {
+  const {user}=useSelector(state=>state.auth)
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [navDrawerOpen, setNavDrawerOpen] = useState(false);
   const toggleCardDrawer=()=>{
@@ -32,7 +33,9 @@ const NavBar = () => {
 
     </div>
     <div className='flex items-center space-x-4'>
+      {user && user.role==="admin" && (
         <Link to='/admin' className='block bg-black px-2 rounded text-sm text-white'>Admin</Link>
+      )}
         <Link to="/profile" className='hover:text-black'><HiOutlineUser className='h-6 w-6 text-gray-700'></HiOutlineUser></Link>
         <button onClick={toggleCardDrawer} className="relative hover:text-black cursor-pointer">
     <HiOutlineShoppingBag className="h-6 w-6" />

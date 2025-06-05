@@ -1,47 +1,21 @@
 import React,{useEffect, useState} from 'react'
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-
+import { useSelector } from 'react-redux';
+import { fetchUserOrders } from "/Users/vipulpandey/Ecommerce/frontend/redux/slices/orderSlice";
 const MyOrdersPage = () => {
+  const dispatch=useDispatch()
+  const {orders,loading,error}=useSelector(state=>state.order)
+  useEffect(()=>{
+    dispatch(fetchUserOrders())
+  },[dispatch])
+
   const navigate=useNavigate()
-  const [orders,setOrders]=useState([]);
   const rowClick=(orderid)=>{
     navigate(`/order/${orderid}`)
   }
-  useEffect(()=>{
-    setTimeout(()=>{
-      const mockOrders=[
-        {
-          _id:"1",
-          createdAt:new Date(),
-          shippingAddress:{city:"Bangalore",country:"India"},
-          orderItems:[
-            {
-              name:"T-shirt",
-              image:"https://picsum.photos/id/1012/200/200",
-            },
-            
-          ],
-          totalPrice:100,
-          isPaid:true
-      },
-      {
-        _id:"2",
-        createdAt:new Date(),
-        shippingAddress:{city:"Bangalore",country:"India"},
-        orderItems:[
-          {
-            name:"T-shirt",
-            image:"https://picsum.photos/id/1013/200/200",
-          },
-          
-        ],
-        totalPrice:200,
-        isPaid:false
-    },
-    ];
-    setOrders(mockOrders)
-    },1000)
-  },[])
+  if(loading)return <p>Loading...</p>
+  if(error)return <p>Error</p>
   return (
     <div className='max-w-7xl mx-auto p-4 sm:p-6'>
       <h2 className='text-xl sm:text-2xl font-bold mb-6'>
@@ -72,10 +46,10 @@ const MyOrdersPage = () => {
           />
         </td>
         <td className='py-2 px-2 sm:py-4 sm:px-4 font-medium text-gray-900 whitespace-nowrap'>#{order._id}</td>
-        <td className='py-2 px-2 sm:py-4 sm:px-4'>{order.createdAt.toLocaleDateString()}</td>
+        <td>{new Date(order.createdAt).toLocaleDateString()}</td>
         <td className='py-2 px-2 sm:py-4 sm:px-4'>{order.shippingAddress.city}, {order.shippingAddress.country}</td>
         <td className='py-2 px-2 sm:py-4 sm:px-4'>{order.orderItems.length}</td>
-        <td className='py-2 px-2 sm:py-4 sm:px-4'>${order.totalPrice}</td>
+        <td className='py-2 px-2 sm:py-4 sm:px-4'>${order.totalPrice.toFixed(2)}</td>
         <td className='py-2 px-2 sm:py-4 sm:px-4'>
           {order.isPaid ? (
             <span className='text-green-600 px-2 py-1 rounded-full text-xs sm:text-sm font-medium'>Paid</span>
