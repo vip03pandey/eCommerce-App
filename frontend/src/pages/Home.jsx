@@ -25,7 +25,6 @@ const Home = () => {
       limit: 8,
     })
   );
-  console.log('Filtered Products:', products);
 
   const fetchBestSeller = async () => {
     try {
@@ -39,7 +38,6 @@ const Home = () => {
       setBestSellerProduct(product);
       setBestSellerLoading(false);
     } catch (err) {
-      console.error('Error fetching best seller:', err.response || err.message);
       setBestSellerError('Failed to load best seller product.');
       setBestSellerLoading(false);
     }
@@ -47,8 +45,6 @@ const Home = () => {
 
   fetchBestSeller();
 }, [dispatch]);
-
-console.log('Rendering Best Seller Section:', { bestSellerProduct, bestSellerLoading, bestSellerError });
   return (
     <div>
       <Hero />

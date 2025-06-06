@@ -1,25 +1,31 @@
 import _ from 'lodash'
 import React from 'react'
-
+import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
+import { fetchAllOrders,updateOrderStatus } from '../../../redux/slices/adminOrderSlice'
 const OrderManagement = () => {
-    const orders=[
-        {
-            _id:123,
-            user:{
-                name:"Vipul Pandey",
-            },
-            totalPrice:100,
-            status:"Processing",
+    const dispatch=useDispatch()
+    const navigate=useNavigate()
+    const {user}=useSelector(state=>state.auth)
+    const {orders,loading,error}=useSelector(state=>state.adminOrders)
+    useEffect(()=>{
+        if(user && user.role!=="admin"){
+            navigate('/')
         }
-    ]
+        else{
+            dispatch(fetchAllOrders())
+        }
+    },[user,navigate,dispatch])
     const handleChange=(id,status)=>{
         console.log({_id:id,status:status})
     }
     const handleStatusChange=(id,status)=>{
         if(window.confirm("Are you sure you want to change status of this order?")){
-            console.log("change status",{_id:id,status:status})
+            dispatch(updateOrderStatus({orderId:id,status}))
         }
     }
+    if(loading)return <p>Loading...</p>
+    if(error)return <p>Error: {error}</p>
   return (
     <div className='max-w-7xl mx-auto p-6'>
         <h2 className='text-2xl font-bold mb-6'>Order Management</h2>
@@ -40,7 +46,7 @@ const OrderManagement = () => {
                             <tr key={order._id} className='border-b hover:bg-gray-60 cursor-pointer'>
                                 <td className='p-4 font-medium text-gray-900 whitespace-nowrap'>#{order._id}</td>
                                 <td className='p-4 '>{order.user.name}</td>
-                                <td className='p-4 '>${order.totalPrice}</td>
+                                <td className='p-4 '>${order.totalPrice.toFixed(2)}</td>
                                 <td className='p-4 '><select value={order.status} onChange={(e)=>handleChange(order._id,e.target.value)} className='p-2.5 bg-gray-50 text-gray-900 text-sm focus:ring-blue-500 border-blue-500 block border rounded'>
                                     <option value="Processing">Processing</option>
                                     <option value="Shipped">Shipped</option>

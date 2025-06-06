@@ -1,6 +1,12 @@
-import React,{useState} from 'react'
-
+import React,{use, useState} from 'react'
+import { useDispatch } from 'react-redux'
+import { useNavigate, useParams } from 'react-router-dom'
+import { fetchProductDetails ,updateProduct} from '../../../redux/slices/productsSlice'
 const EditProductPage = () => {
+    const dispatch=useDispatch()
+    const navigate=useNavigate()
+    const {id}=useParams()
+    const {selectedProduct,loading,error}=useSelector(state=>state.products)
     const [productData,setProductData]=useState({
         name:"",
         description:"",
@@ -22,18 +28,43 @@ const EditProductPage = () => {
         }
     ]
     })
+    const [uploading,setUploading]=useState(false)
+    useEffect(()=>{
+        if(id){
+            dispatch(fetchProductDetails(id))
+        }
+    },[dispatch,id])
+    useEffect(()=>{
+        if(selectedProduct){
+            setProductData(selectedProduct)
+        }
+    },  [selectedProduct])
     const handleChange=(e)=>{
        const {name,value}=e.target;
        setProductData((prevData)=>({...prevData,[name]:value}))
     }
     const handleImageUpload=async (e)=>{
         const file=e.target.files[0];
-        console.log(file);
+        const formData=new FormData();
+        formData.append("file",file);
+        setUploading(true)
+        const response=await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/products/images`,formData,
+        {
+            headers:{
+                Authorization:`Bearer ${localStorage.getItem("adminToken")}`
+            }
+        }
+        )
+        setProductData((prevData)=>({...prevData,images:[...prevData.images,{url:response.data.url,altText:file.name}]}))
+        setUploading(false)
     }
     const handleSubmit=(e)=>{
         e.preventDefault();
-        console.log(productData);
+        dispatch(updateProduct({id,productData}))
+        navigate(`/admin/products/${id}`)
     }
+    if(loading)return <p>Loading...</p>
+    if(error)return <p>Error: {error}</p>
   return (
     <div className='max-w-5xl mx-auto p-6 shadow-md rounded-lg'>
       <h2 className='text-2xl font-bold mb-6'>Edit Product</h2>

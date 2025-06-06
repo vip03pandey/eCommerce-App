@@ -32,8 +32,6 @@ export const fetchProductsByFilters = createAsyncThunk(
     if (brand) query.append("brand", brand);
     if (limit) query.append("limit", limit);
 
-    console.log('Sorting with:', sortBy);
-
     const response = await axios.get(
       `${import.meta.env.VITE_BACKEND_URL}/api/products?${query.toString()}`
     );
@@ -74,7 +72,6 @@ export const fetchSimilarProducts = createAsyncThunk(
   "products/fetchSimilarProducts",
   async ({ id }) => {
     const response = await axios.get(
-      // ✅ Correct
 `${import.meta.env.VITE_BACKEND_URL}/api/products/similar/${id}`
 
 

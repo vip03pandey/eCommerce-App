@@ -2,22 +2,26 @@ import { createSlice,createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
 
-export const fetchAllOrders=createAsyncThunk("adminOrders/fetchAllOrders",async(_,{rejectWithValue})=>{
-    try{
-    const response=await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/admin/orders`,
-        {
-            headers:{
-                Authorization:`Bearer ${localStorage.getItem("adminToken")}`
-            }
-        }
-    )
-    return response.data
-}
-    catch(err){
-        console.log(err)
-        return rejectWithValue(err.response.data)
+export const fetchAllOrders = createAsyncThunk(
+    "adminOrders/fetchAllOrders",
+    async (_, { rejectWithValue }) => {
+      try {
+        const token = localStorage.getItem("adminToken");
+        if (!token) throw new Error("No admin token found");
+  
+        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/admin/orders`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        return response.data;
+      } catch (err) {
+        console.log("Error fetching orders:", err);
+        return rejectWithValue(err?.response?.data || err.message);
+      }
     }
-})
+  );
+  
 
 
 export const updateOrderStatus=createAsyncThunk("adminOrders/updateOrderStatus",async({orderId,status})=>{
