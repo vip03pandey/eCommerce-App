@@ -1,5 +1,5 @@
 const mongoose=require('mongoose')
-const { collection } = require('./user')
+const { collection } = require('./User')
 
 const productSchema=new mongoose.Schema({
     name:{
