@@ -18,10 +18,11 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
 app.use(cors({
     origin: [
-      'https://e-commerce-app-5avu.vercel.app',
-      'http://localhost:3000',
-      'http://localhost:5173' 
-    ],
+        'https://e-commerce-app-5avv.vercel.app', 
+        'http://localhost:3000',
+        'http://localhost:5173'
+      ],
+      
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']
