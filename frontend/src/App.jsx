@@ -19,7 +19,7 @@ import ProductManagement from './components/Admin/ProductManagement';
 import EditProductPage from './components/Admin/EditProductPage';
 import OrderManagement from './components/Admin/OrderManagement';
 import {Provider} from 'react-redux'
-import store from '/Users/vipulpandey/Ecommerce/frontend/redux/store'
+import store from '../redux/store' 
 import ProtectedRoutes from './components/Common/ProtectedRoutes';
 const App = () => {
   return (

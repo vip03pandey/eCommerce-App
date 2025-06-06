@@ -2,7 +2,7 @@ import React,{useEffect, useState} from 'react'
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { fetchUserOrders } from "/Users/vipulpandey/Ecommerce/frontend/redux/slices/orderSlice";
+import { fetchUserOrders } from "../../redux/slices/orderSlice";
 const MyOrdersPage = () => {
   const dispatch=useDispatch()
   const {orders,loading,error}=useSelector(state=>state.order)

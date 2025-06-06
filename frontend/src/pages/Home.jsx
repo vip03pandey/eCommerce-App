@@ -8,7 +8,7 @@ import FeaturedCollection from '../components/Products/FeaturedCollection';
 import FeaturesSection from '../components/Products/FeaturesSection';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
-import { fetchProductsByFilters } from '/Users/vipulpandey/Ecommerce/frontend/redux/slices/productsSlice.js';
+import { fetchProductsByFilters } from '../../redux/slices/productsSlice';
 
 const Home = () => {
   const dispatch = useDispatch();

@@ -1,6 +1,6 @@
 import React from 'react'
 import Topbar from '../Layout/Topbar'
-import NavBar from './NavBar'
+import NavBar from './Navbar'
 
 function Header() {
   return (

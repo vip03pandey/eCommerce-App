@@ -1,6 +1,6 @@
 import React,{useState,useEffect} from 'react'
 import { Link } from 'react-router-dom';
-import registerImage from '/Users/vipulpandey/Ecommerce/frontend/src/assets/register.webp'
+import registerImage from '../assets/register.webp'
 import { registerUser } from '../../redux/slices/authSlice';
 import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom';
