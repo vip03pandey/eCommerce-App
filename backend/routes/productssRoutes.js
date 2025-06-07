@@ -189,11 +189,10 @@ router.get("/best-seller", async (req, res) => {
 // new arrival
 router.get("/new-arrivals", async (req, res) => {
     try{
-        const newArrivals = await Product.find().sort({ createdAt: -1 }).limit(8);
+        const newArrivals = await Product.find().sort({ createdAt: -1 }).limit(8).maxTimeMS(20000);
         res.json(newArrivals);
     }
     catch(err){
-        console.log(err)
         res.status(500).send(err)
     }
 })
