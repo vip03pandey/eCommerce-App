@@ -17,18 +17,35 @@ const adminOrderRoutes=require('./routes/adminOrderRoutes')
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
 // const corsOptions = {
-//     origin: 'https://e-commerce-app-5avv.vercel.app',
+//     origin: [
+//       'https://e-commerce-app-fxv2.vercel.app',
+//       'http://localhost:3000',
+//       'http://localhost:3001'
+//     ],
+//     credentials: true,
 //     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-//     allowedHeaders: ['Content-Type', 'Authorization'],
-//     credentials: true
+//     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+//     optionsSuccessStatus: 200
 //   };
   
 //   app.use(cors(corsOptions));
-//   app.options('*', cors(corsOptions))
-app.use(cors())
+  
+  // Handle preflight requests
+//   app.options('*', cors(corsOptions));
 dotenv.config()
 connectDB ()
-
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+    res.header('Access-Control-Allow-Credentials', 'true');
+    
+    if (req.method === 'OPTIONS') {
+        res.sendStatus(200);
+    } else {
+        next();
+    }
+});
 
 const PORT=process.env.PORT || 9000
 
