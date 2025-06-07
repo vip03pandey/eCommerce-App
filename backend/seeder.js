@@ -1,9 +1,8 @@
 const mongoose = require('mongoose')
 const dotenv=require('dotenv')
 const Product = require('./models/Products')
-const User = require('./models/user')
+const User = require('./models/User')
 const products = require('./data/productList')
-const user = require('./models/user')
 const Cart=require('./models/Cart')
 dotenv.config()
 
