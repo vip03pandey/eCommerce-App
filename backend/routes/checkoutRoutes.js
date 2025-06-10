@@ -39,7 +39,7 @@ router.post('/', protect, async (req, res) => {
 // updating checout to mark as paid after payment
 router.put("/:id/pay", protect, async (req, res) => {
     const { id } = req.params;
-    const { paymentStatus, paymentDetails } = req.body; // ✅ FIX
+    const { paymentStatus, paymentDetails } = req.body;
 
     try {
         const checkout = await Checkout.findById(id);

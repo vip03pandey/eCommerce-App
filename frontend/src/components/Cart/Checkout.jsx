@@ -107,7 +107,6 @@ const handleFinalizeCheckout = async (checkoutId) => {
 
       );
       navigate("/order-confirmation"); 
-      console.log("Checkout Success", res.data);
       return res.data; 
     } catch (err) {
       console.error("Finalize Checkout", err);
@@ -130,8 +129,32 @@ const handleFinalizeCheckout = async (checkoutId) => {
             <div className='text-red-500'>Cart is empty</div>
         </div>
     }
+    const handlePaypalTogetId=()=>{
+        navigate('/paypal-check')
+    }
+    const [isRed, setIsRed] = useState(true);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIsRed(prev => !prev);
+    }, 1000); // Toggle every 1 second
+
+    return () => clearInterval(interval); // Cleanup on unmount
+  }, []);
   return (
-    <div className='grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-7xl mx-auto py-10 px-6 tracking tighter'>
+    <div >
+        <div className='flex justify-center my-4'>
+        
+        <button
+      onClick={handlePaypalTogetId}
+      className={`text-white p-3 rounded-2xl cursor-pointer transition-colors duration-500 ${
+        isRed ? 'bg-red-600' : 'bg-gray-600'
+      }`}
+    >
+      Click here to get your PayPal Id
+    </button>
+        </div>
+      <div className='grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-7xl mx-auto py-10 px-6 tracking tighter'>
         <div className='bg-white rounded-lg p-6 '>
             <h2 className='text-2xl uppercase mb-6'>Checkout</h2>
             <form onSubmit={handleCreateCheckout} action="">
@@ -200,12 +223,13 @@ const handleFinalizeCheckout = async (checkoutId) => {
                 {cart.products.map((product,index)=>(
                     <div key={index} className='flex items-start justify-between py-2 border-b'>
                         <div className='flex items-start'>
-                            <img src={product.image} alt={product.name} className='w-full h-24  object-cover mr-4' />
+                            <img src={product.image} alt={product.name} className='w-30 h-30  object-cover mr-4' />
                             <div>
                                 <h3 className='text-md'>{product.name}</h3>
                                 <p className='text-gray-500'>Size:{product.size}</p>
                                 <p className='text-gray-500'>Size:{product.color}</p>
                                 <p className='text-xl'>${product.price?.toLocaleString()}</p>
+                                <p className='text-gray-500'>Quantity:{product.quantity}</p>
                             </div>
                         </div>
                     </div>
@@ -224,6 +248,7 @@ const handleFinalizeCheckout = async (checkoutId) => {
                 <p>${cart.totalPrice?.toLocaleString()}</p>
             </div>
         </div>
+    </div>
     </div>
   )
 }

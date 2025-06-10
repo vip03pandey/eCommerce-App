@@ -13,6 +13,7 @@ const SubscribeRoutes=require('./routes/SubscribeRoutes')
 const adminRoutes=require('./routes/AdminRoutes')
 const adminProductRoutes=require('./routes/ProductAdminRoutes')
 const adminOrderRoutes=require('./routes/adminOrderRoutes')
+const EmailRoutes=require('./routes/Email')
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
@@ -63,6 +64,7 @@ app.use('/api/subscribe',SubscribeRoutes)
 app.use('/api/admin/users',adminRoutes)
 app.use('/api/admin/products',adminProductRoutes)
 app.use('/api/admin/orders',adminOrderRoutes)
+app.use('/api/email',EmailRoutes)
 
 app.listen(PORT,()=>{
     console.log(`Server is running on port ${PORT}`)

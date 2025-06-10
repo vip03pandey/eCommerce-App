@@ -21,6 +21,7 @@ import OrderManagement from './components/Admin/OrderManagement';
 import {Provider} from 'react-redux'
 import store from '../redux/store' 
 import ProtectedRoutes from './components/Common/ProtectedRoutes';
+import PaypaLId from './components/Cart/PaypaLId';
 const App = () => {
   return (
   <Provider store={store}>
@@ -38,6 +39,7 @@ const App = () => {
     <Route path="order-confirmation" element={<OrderConfirmation/>}></Route>
     <Route path="order/:id" element={<OrderDetailsPage/>}></Route>
     <Route path="my-orders" element={<MyOrdersPage/>}></Route>
+    <Route path="paypal-check" element={<PaypaLId/>}></Route>
 
     </Route>
     <Route path='/admin' element={<ProtectedRoutes role="admin"><AdminLayout/></ProtectedRoutes>}>
